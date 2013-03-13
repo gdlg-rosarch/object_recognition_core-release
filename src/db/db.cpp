@@ -39,6 +39,7 @@
 #include <boost/foreach.hpp>
 
 #include "db_couch.h"
+#include "db_default.h"
 #include "db_empty.h"
 #include "db_filesystem.h"
 #include <object_recognition_core/db/db.h>
@@ -77,27 +78,24 @@ namespace object_recognition_core
     {
       type_ = StringToType(type);
 
-      if (raw_["type"] == type)
+      if ((raw_.find("type") != raw_.end()) && (raw_["type"] == type))
         return;
 
       switch (type_)
       {
         case ObjectDbParameters::COUCHDB:
         {
-          ObjectDbCouch tmp;
-          raw_ = tmp.default_raw_parameters();
+          raw_ = object_recognition_core::db::ObjectDbDefaults<ObjectDbCouch>::default_raw_parameters();
           break;
         }
         case ObjectDbParameters::EMPTY:
         {
-          raw_.clear();
-          raw_["type"] = "empty";
+          raw_ = object_recognition_core::db::ObjectDbDefaults<ObjectDbEmpty>::default_raw_parameters();
           break;
         }
         case ObjectDbParameters::FILESYSTEM:
         {
-          ObjectDbFilesystem tmp;
-          raw_ = tmp.default_raw_parameters();
+          raw_ = object_recognition_core::db::ObjectDbDefaults<ObjectDbFilesystem>::default_raw_parameters();
           break;
         }
         case ObjectDbParameters::NONCORE:
@@ -169,20 +167,21 @@ namespace object_recognition_core
       switch (type())
       {
         case ObjectDbParameters::COUCHDB:
-          res.reset(new ObjectDbCouch(params_raw));
+          res.reset(new ObjectDbCouch());
           break;
         case ObjectDbParameters::EMPTY:
           res.reset(new ObjectDbEmpty());
           break;
         case ObjectDbParameters::FILESYSTEM:
-          res.reset(new ObjectDbFilesystem(params_raw));
+          res.reset(new ObjectDbFilesystem());
           break;
         default:
           std::cerr << "Cannot generate DB for non-core" << std::endl;
           break;
       }
 
-      res->set_parameters(*this);
+      ObjectDbParameters params_non_const = *this;
+      res->set_parameters(params_non_const);
 
       return res;
     }
@@ -198,26 +197,22 @@ namespace object_recognition_core
 
     }
 
-    Document::Document(const ObjectDbPtr& db)
-        :
-          db_(db)
+    void
+    Document::set_db(const ObjectDbPtr& db)
     {
-
-    }
-
-    Document::Document(const ObjectDbPtr & db, const DocumentId &document_id)
-        :
-          db_(db),
-          document_id_(document_id)
-    {
-      // Load all fields from the DB (not the attachments)
-      db->load_fields(document_id_, fields_);
+      db_ = db;
     }
 
     void
-    Document::update_db(const ObjectDbPtr& db)
+    Document::set_document_id(const DocumentId &document_id)
     {
-      db_ = db;
+      document_id_ = document_id;
+    }
+
+    void
+    Document::load_fields() {
+      // Load all fields from the DB (not the attachments)
+      db_->load_fields(document_id_, fields_);
     }
 
     /** Persist your object to a given DB
@@ -297,6 +292,35 @@ namespace object_recognition_core
       attachments_[attachment_name] = stream_attachment;
     }
 
+    void
+    Document::SetIdRev(const std::string& id, const std::string& rev)
+    {
+      document_id_ = id;
+      revision_id_ = rev;
+      set_field<std::string>("_id", id);
+      set_field<std::string>("_rev", rev);
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /** Extract the stream of a specific attachment for a Document from the DB
+     * Not const because it might change the revision_id_
+     * @param db the db to read from
+     * @param attachment_name the name of the attachment
+     * @param stream the string of data to write to
+     * @param mime_type the MIME type as stored in the DB
+     * @param do_use_cache if true, try to load and store data in the object itself
+     */
+    void
+    DummyDocument::get_attachment_stream(const AttachmentName &attachment_name, std::ostream& stream,
+                                    MimeType mime_type) const
+    {
+      // check if it is loaded
+      AttachmentMap::const_iterator val = attachments_.find(attachment_name);
+      if (val != attachments_.end())
+        stream << val->second->stream_.rdbuf();
+    }
+
     /** Add a stream attachment to a a Document
      * @param attachment_name the name of the stream
      * @param stream the stream itself
@@ -322,22 +346,13 @@ namespace object_recognition_core
       fields_.erase(key);
     }
 
-    void
-    Document::SetIdRev(const std::string& id, const std::string& rev)
-    {
-      document_id_ = id;
-      revision_id_ = rev;
-      set_value<std::string>("_id", id);
-      set_value<std::string>("_rev", rev);
-    }
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef CV_MAJOR_VERSION
     // Specializations for cv::Mat
     template<>
     void
-    Document::get_attachment<cv::Mat>(const AttachmentName &attachment_name, cv::Mat & value) const
+    DummyDocument::get_attachment<cv::Mat>(const AttachmentName &attachment_name, cv::Mat & value) const
     {
       std::stringstream ss;
       get_attachment_stream(attachment_name, ss, "text/x-yaml");
@@ -349,7 +364,7 @@ namespace object_recognition_core
 
     template<>
     void
-    Document::set_attachment<cv::Mat>(const AttachmentName &attachment_name, const cv::Mat & value)
+    DummyDocument::set_attachment<cv::Mat>(const AttachmentName &attachment_name, const cv::Mat & value)
     {
       std::stringstream ss;
       std::map<std::string, cv::Mat> ss_map;
