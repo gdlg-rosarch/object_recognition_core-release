@@ -36,9 +36,11 @@
 #ifndef DB_COUCH_H_
 #define DB_COUCH_H_
 
-#include "curl_interface.h"
 #include <object_recognition_core/common/types.h>
 #include <object_recognition_core/db/db_base.h>
+
+#include "curl_interface.h"
+#include "db_default.h"
 
 using object_recognition_core::db::AttachmentName;
 using object_recognition_core::db::CollectionName;
@@ -50,6 +52,30 @@ using object_recognition_core::db::ObjectDbParametersRaw;
 using object_recognition_core::db::RevisionId;
 using object_recognition_core::db::View;
 using object_recognition_core::db::ViewElement;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class ObjectDbCouch;
+
+namespace object_recognition_core {
+namespace db {
+
+template<>
+struct ObjectDbDefaults<ObjectDbCouch> {
+  static object_recognition_core::db::ObjectDbParametersRaw default_raw_parameters() {
+    ObjectDbParametersRaw res;
+    res["root"] = "http://localhost:5984";
+    res["collection"] = "object_recognition";
+    res["type"] = type();
+
+    return res;
+  }
+  static object_recognition_core::db::DbType type() {
+    return "CouchDB";
+  }
+};
+}
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
