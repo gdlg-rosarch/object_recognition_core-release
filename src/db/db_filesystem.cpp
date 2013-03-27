@@ -40,31 +40,6 @@
 #include <sstream>
 
 #include "db_filesystem.h"
-#include "db_default.h"
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-class ObjectDbFilesystem;
-
-namespace object_recognition_core {
-namespace db {
-
-template<>
-struct ObjectDbDefaults<ObjectDbFilesystem> {
-  static object_recognition_core::db::ObjectDbParametersRaw default_raw_parameters() {
-    ObjectDbParametersRaw res;
-    res["path"] = "/tmp";
-    res["collection"] = "object_recognition";
-    res["type"] = type();
-
-    return res;
-  }
-  static object_recognition_core::db::DbType type() {
-    return "filesystem";
-  }
-};
-}
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
