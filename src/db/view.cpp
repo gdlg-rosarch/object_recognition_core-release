@@ -33,43 +33,12 @@
  *
  */
 
-#include <object_recognition_core/db/view.h>
+#include <object_recognition_core/db/db.h>
 
 namespace object_recognition_core
 {
   namespace db
   {
-    /** Extract the stream of a specific attachment for a Document from the DB
-     * Not const because it might change the revision_id_
-     * @param db the db to read from
-     * @param attachment_name the name of the attachment
-     * @param stream the string of data to write to
-     * @param mime_type the MIME type as stored in the DB
-     * @param do_use_cache if true, try to load and store data in the object itself
-     */
-    void
-    ViewElement::get_attachment_stream(const AttachmentName &attachment_name, std::ostream& stream,
-                                       MimeType mime_type) const
-    {
-      // check if it is loaded
-      AttachmentMap::const_iterator val = attachments_.find(attachment_name);
-      if (val == attachments_.end())
-      {
-        throw std::runtime_error(attachment_name + " attachment does not exist.");
-      }
-      else
-      {
-        stream << val->second->stream_.rdbuf();
-        return;
-      }
-    }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ViewElement::~ViewElement()
-    {
-    }
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Given a document, returns whether it is in the view, and if so, returns the key and value
@@ -94,6 +63,7 @@ namespace object_recognition_core
           break;
         }
         case VIEW_OBJECT_INFO_WHERE_OBJECT_ID:
+        case VIEW_OBSERVATION_WHERE_OBJECT_ID:
         {
           // It is a dummy document so it never belong to the db
           return false;
@@ -120,5 +90,77 @@ namespace object_recognition_core
     {
       is_key_set_ = false;
     }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ViewIterator::ViewIterator(const View &view, const ObjectDbPtr& db) :
+    start_offset_(0), query_(
+        boost::bind(&ObjectDb::QueryView, db, view, _1, _2, _3, _4, _5)), db_(
+        db) {
+}
+
+const unsigned int ViewIterator::BATCH_SIZE = 100;
+
+ViewIterator::ViewIterator() :
+    start_offset_(0) {
+}
+
+/** Set the db on which to perform the Query
+ * @param db The db on which the query is performed
+ */
+void ViewIterator::set_db(const ObjectDbPtr & db) {
+  db_ = db;
+}
+
+/** Perform the query itself
+ * @return an Iterator that will iterate over each result
+ */
+ViewIterator &
+ViewIterator::begin() {
+  // Process the query and get the ids of several objects
+  query_(BATCH_SIZE, start_offset_, total_rows_, start_offset_, view_elements_);
+  BOOST_FOREACH(Document & doc, view_elements_)
+    doc.set_db(db_);
+  return *this;
+}
+
+ViewIterator ViewIterator::end() {
+  return ViewIterator();
+}
+
+ViewIterator &
+ViewIterator::operator++() {
+  // If we have nothing else to pop, try to get more from the DB
+  if (view_elements_.empty()) {
+    // Figure out if we need to query for more document ids
+    if (start_offset_ < total_rows_) {
+      query_(BATCH_SIZE, start_offset_, total_rows_, start_offset_,
+          view_elements_);
+      BOOST_FOREACH(Document & doc, view_elements_)
+        doc.set_db(db_);
+    }
+  } else if (!view_elements_.empty())
+    view_elements_.pop_back();
+  return *this;
+}
+
+bool ViewIterator::operator==(const ViewIterator & document_view) const {
+  return !this->operator !=(document_view);
+}
+
+bool ViewIterator::operator!=(const ViewIterator & document_view) const {
+  if (document_view.view_elements_.empty())
+    return (!view_elements_.empty());
+  if (view_elements_.size() >= document_view.view_elements_.size())
+    return std::equal(view_elements_.begin(), view_elements_.end(),
+        document_view.view_elements_.begin());
+  else
+    return std::equal(document_view.view_elements_.begin(),
+        document_view.view_elements_.end(), view_elements_.begin());
+}
+
+Document ViewIterator::operator*() const {
+  return view_elements_.back();
+}
   }
 }
