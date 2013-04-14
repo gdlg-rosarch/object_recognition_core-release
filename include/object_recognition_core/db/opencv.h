@@ -8,7 +8,7 @@
 #include <boost/serialization/binary_object.hpp>
 #include <boost/serialization/split_free.hpp>
 
-#include <object_recognition_core/db/db.h>
+#include <object_recognition_core/db/document.h>
 
 namespace object_recognition_core
 {
@@ -24,10 +24,10 @@ namespace object_recognition_core
     yaml2mats(std::map<std::string, cv::Mat>& mm,std::istream& in, bool do_gzip = false);
 
     void
-    png_attach(cv::Mat image, db::Document& doc, const std::string& name);
+    png_attach(cv::Mat image, db::DummyDocument& doc, const std::string& name);
 
     void
-    get_png_attachment(cv::Mat& image, db::Document& doc, const std::string& name);
+    get_png_attachment(cv::Mat& image, const db::DummyDocument& doc, const std::string& name);
   }
 }
 
