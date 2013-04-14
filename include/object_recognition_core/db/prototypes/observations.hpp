@@ -38,12 +38,15 @@
 #include <string>
 
 #include <opencv2/core/core.hpp>
-#include <object_recognition_core/db/db.h>
 
-namespace object_recognition_core
-{
+namespace object_recognition_core {
+namespace db {
+class DummyDocument;
+}
+
   namespace prototypes
   {
+
     struct Observation
     {
       //fields
@@ -59,9 +62,9 @@ namespace object_recognition_core
     };
 
     void
-    operator>>(Observation& o, db::Document& doc);
+    operator>>(Observation& o, db::DummyDocument* doc);
     void
-    operator<<(Observation& o, db::Document& doc);
+    operator<<(Observation& o, const db::DummyDocument* doc);
     void
     operator>>(Observation& obs, const ecto::tendrils& o);
     void
