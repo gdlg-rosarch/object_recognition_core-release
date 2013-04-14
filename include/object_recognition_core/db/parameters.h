@@ -33,15 +33,18 @@
  *
  */
 
-#ifndef DB_PARAMETERS_H_
-#define DB_PARAMETERS_H_
+#ifndef ORK_CORE_DB_PARAMETERS_H_
+#define ORK_CORE_DB_PARAMETERS_H_
 
 #include <object_recognition_core/common/json.hpp>
 
-namespace object_recognition_core
-{
-  namespace db
-  {
+namespace object_recognition_core {
+namespace db {
+
+typedef or_json::mObject ObjectDbParametersRaw;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     class ObjectDb;
 
     /** A class that stores the common parameters for the object DB
@@ -154,5 +157,5 @@ namespace object_recognition_core
   }
 }
 
-#endif /* DB_PARAMETERS_H_ */
+#endif /* ORK_CORE_DB_PARAMETERS_H_ */
 
