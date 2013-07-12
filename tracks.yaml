@@ -9,11 +9,10 @@ tracks:
     - git-bloom-generate -y rosdebian --prefix release/:{ros_distro} :{ros_distro}
       -i :{release_inc}
     devel_branch: null
-    last_version: !!python/unicode '0.5.1'
+    last_version: !!python/unicode '0.5.3'
     name: upstream
     patches: null
     release_inc: '0'
-    release_repo_url: null
     release_tag: :{version}
     ros_distro: fuerte
     vcs_type: git
@@ -29,11 +28,10 @@ tracks:
     - git-bloom-generate -y rosdebian --prefix release/:{ros_distro} :{ros_distro}
       -i :{release_inc}
     devel_branch: null
-    last_version: 0.5.4
+    last_version: 0.5.3
     name: upstream
     patches: null
     release_inc: '0'
-    release_repo_url: null
     release_tag: :{version}
     ros_distro: groovy
     vcs_type: git
@@ -49,11 +47,10 @@ tracks:
     - git-bloom-generate -y rosdebian --prefix release/:{ros_distro} :{ros_distro}
       -i :{release_inc}
     devel_branch: null
-    last_version: 0.5.4
+    last_version: 0.5.3
     name: upstream
     patches: null
     release_inc: '0'
-    release_repo_url: null
     release_tag: :{version}
     ros_distro: hydro
     vcs_type: git
