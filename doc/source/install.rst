@@ -23,8 +23,7 @@ First, build your workspace:
 
 .. toggle_table::
    :arg1: Non-ROS
-   :arg2: Fuerte
-   :arg3: Groovy
+   :arg2: ROS
 
 
 .. toggle:: Non-ROS
@@ -55,28 +54,8 @@ First, build your workspace:
       git clone http://github.com/plasmodic/ecto_ros
       git clone http://github.com/wg-perception/opencv_candidate
 
-.. toggle:: Fuerte
 
-   First install catkin and source your ROS setup file:
-   
-   .. code-block:: sh
-   
-      sudo apt-get install libopenni-dev ros-fuerte-catkin ros-fuerte-ecto* ros-fuerte-opencv-candidate
-      source /opt/ros/fuerte/setup.sh
-   
-   Install the catkin package from source as the package does not have the toplevel.cmake file:
-   
-   .. code-block:: sh
-   
-<<<<<<< HEAD
-      ln -s /opt/ros/fuerte/share/catkin/cmake/toplevel.cmake CMakeLists.txt
-=======
-      git clone http://github.com/ros/catkin.git && cd catkin && git checkout fuerte-devel && cd ..
-      ln -s catkin/toplevel.cmake CMakeLists.txt
->>>>>>> update install instructions
-
-
-.. toggle:: Groovy
+.. toggle:: ROS
 
    First source your ROS setup file:
    
@@ -103,22 +82,14 @@ any ROS stuff:
 
 .. toggle_table::
    :arg1: Non-ROS
-   :arg2: Fuerte
-   :arg3: Groovy
+   :arg3: ROS
 
 .. toggle:: Non-ROS
 
    Nothing for non-ROS.
 
 
-.. toggle:: Fuerte
-
-   .. code-block:: sh
-   
-      git clone http://github.com/wg-perception/object_recognition_msgs
-      git clone http://github.com/wg-perception/object_recognition_ros && git checkout fuerte-devel
-
-.. toggle:: Groovy
+.. toggle:: ROS
 
    .. code-block:: sh
    
@@ -131,8 +102,7 @@ and then build your code:
 
 .. toggle_table::
    :arg1: Non-ROS
-   :arg2: Fuerte
-   :arg3: Groovy
+   :arg2: ROS
 
 
 .. toggle:: Non-ROS
@@ -142,14 +112,7 @@ and then build your code:
       cd ../ && mkdir build && cd build && cmake ../src && make
 
 
-.. toggle:: Fuerte
-
-   .. code-block:: sh
-   
-      cd ../ && mkdir build && cd build && cmake ../src && make
-
-
-.. toggle:: Groovy
+.. toggle:: ROS
 
    .. code-block:: sh
    
@@ -162,6 +125,26 @@ If you are a developer and have write access to the repositories, search and rep
 
 
 To maintain your code, each folder is each own ``git`` repository and you can pull/push from there.
+
+rosinstall file
+***************
+
+Under ROS, you can alternatively use that `rosinstall <http://www.ros.org/wiki/rosinstall>`_ file :download:`ork.rosinstall`:
+
+
+.. literalinclude:: ork.rosinstall
+   :language: json
+
+To install it, just follow those commands:
+
+.. code-block:: bash
+
+   mkdir ws && cd ws
+   wstool init src https://raw.github.com/wg-perception/object_recognition_core/master/doc/source/ork.rosinstall
+   cd src && wstool update -j8
+   cd .. && rosdep install --from-paths src -i -y
+   catkin_make
+   source devel/setup.bash
 
 Building the documentation
 **************************
@@ -181,7 +164,7 @@ From root, just type:
 
    cd build
    make doxygen
-   make doc
+   make sphinx-doc
 
 You will find the generated documentation under ``build/doc/html``.
 
