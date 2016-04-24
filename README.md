@@ -1,3 +1,26 @@
+## object_recognition_core (kinetic) - 0.6.6-0
+
+The packages in the `object_recognition_core` repository were released into the `kinetic` distro by running `/usr/bin/bloom-release --track kinetic --rosdistro kinetic object_recognition_core` on `Sun, 24 Apr 2016 10:41:20 -0000`
+
+The `object_recognition_core` package was released.
+
+Version of package(s) in repository `object_recognition_core`:
+
+- upstream repository: https://github.com/wg-perception/object_recognition_core.git
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `null`
+- new version: `0.6.6-0`
+
+Versions of tools used:
+
+- bloom version: `0.5.21`
+- catkin_pkg version: `0.2.10`
+- rosdep version: `0.11.4`
+- rosdistro version: `0.4.7`
+- vcstools version: `0.1.38`
+
+
 ## object_recognition_core (jade) - 0.6.5-0
 
 The packages in the `object_recognition_core` repository were released into the `jade` distro by running `/usr/bin/bloom-release --track jade --rosdistro jade object_recognition_core` on `Thu, 12 Feb 2015 20:16:19 -0000`
