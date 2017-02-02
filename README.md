@@ -1,3 +1,26 @@
+## object_recognition_core (jade) - 0.6.7-0
+
+The packages in the `object_recognition_core` repository were released into the `jade` distro by running `/usr/bin/bloom-release --track jade --rosdistro jade object_recognition_core` on `Thu, 02 Feb 2017 20:52:46 -0000`
+
+The `object_recognition_core` package was released.
+
+Version of package(s) in repository `object_recognition_core`:
+
+- upstream repository: https://github.com/wg-perception/object_recognition_core.git
+- release repository: https://github.com/ros-gbp/object_recognition_core-release.git
+- rosdistro version: `0.6.5-0`
+- old version: `0.6.5-0`
+- new version: `0.6.7-0`
+
+Versions of tools used:
+
+- bloom version: `0.5.23`
+- catkin_pkg version: `0.2.10`
+- rosdep version: `0.11.5`
+- rosdistro version: `0.5.0`
+- vcstools version: `0.1.39`
+
+
 ## object_recognition_core (indigo) - 0.6.7-0
 
 The packages in the `object_recognition_core` repository were released into the `indigo` distro by running `/usr/bin/bloom-release --track indigo --rosdistro indigo object_recognition_core` on `Thu, 02 Feb 2017 20:43:22 -0000`
