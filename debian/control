@@ -1,0 +1,12 @@
+Source: ros-kinetic-object-recognition-core
+Section: misc
+Priority: extra
+Maintainer: Vincent Rabaud <vincent.rabaud@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), curl, libboost-all-dev, libcurl4-openssl-dev, ros-kinetic-catkin, ros-kinetic-cmake-modules, ros-kinetic-ecto, ros-kinetic-ecto-image-pipeline, ros-kinetic-sensor-msgs, ros-kinetic-visualization-msgs
+Homepage: http://wg-perception.github.io/object_recognition_core/
+Standards-Version: 3.9.2
+
+Package: ros-kinetic-object-recognition-core
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, couchdb, curl, libboost-all-dev, libcurl4-openssl-dev, ros-kinetic-ecto, ros-kinetic-ecto-image-pipeline, ros-kinetic-sensor-msgs
+Description: object_recognition_core contains tools to launch several recognition pipelines, train objects, store models ...
