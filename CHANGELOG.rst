@@ -1,3 +1,20 @@
+0.6.7 (2017-02-02)
+------------------
+* Merge pull request `#46 <https://github.com/wg-perception/object_recognition_core/issues/46>`_ from hris2003/master
+  (fix `#45 <https://github.com/wg-perception/object_recognition_core/issues/45>`_)(ModelDocument)Get _id field directly from ViewIterator
+* (fix)(ModelDocument)Get _id field directly from ViewIterator
+* fix the rosinstall files
+* Contributors: Ha Dang, Vincent Rabaud
+
+0.6.6 (2016-04-24)
+------------------
+* add missing dependencies
+* fix doc according to https://github.com/wg-perception/reconstruction/issues/6
+* simplify OpenCV3 compatibility
+* add citation info in the docs
+  fixes `#34 <https://github.com/wg-perception/object_recognition_core/issues/34>`_
+* Contributors: Vincent Rabaud
+
 0.6.5 (2015-02-12)
 ------------------
 * Properly install test macros
